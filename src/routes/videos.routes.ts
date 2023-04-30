@@ -3,21 +3,21 @@ import { VideoRepository } from "../modules/videos/repositories/VideosRepositori
 import { login } from '../middleware/login'
 
 
-const VideosRoutes = Router();
+const videosRoutes = Router();
 const videoRepository = new VideoRepository; 
 
 
-VideosRoutes.post('/create-video', login, (request, response) => {
+videosRoutes.post('/create-video', login, (request, response) => {
     videoRepository.create(request, response);
 })
 
-VideosRoutes.get('/get-videos', login, (request, response) => {
+videosRoutes.get('/get-videos', login, (request, response) => {
     videoRepository.getVideos(request, response);
 })
 
-VideosRoutes.get('/search', (request, response) => {
+videosRoutes.get('/search', (request, response) => {
     videoRepository.searchVideos(request, response);
 })
 
 
-export { VideosRoutes };
+export { videosRoutes };
