@@ -9,8 +9,15 @@ const videos_routes_1 = require("./routes/videos.routes");
 const dotenv_1 = require("dotenv");
 (0, dotenv_1.config)();
 const app = (0, express_1.default)();
-console.log(process.env.SECRET);
+const cors = require('cors');
+app.use(function (req, res, next) {
+    res.header("Acess-Control-Allow-Origin", '*');
+    res.header("Acess-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Acess-Control-Allow-Methods", 'POST, GET, PATCH, DELETE, OPTIONS');
+    next();
+});
+app.use(cors());
 app.use(express_1.default.json());
 app.use('/user', user_routes_1.userRoutes);
-app.use('/videos', videos_routes_1.VideosRoutes);
+app.use('/videos', videos_routes_1.videosRoutes);
 app.listen(4000);

@@ -20,7 +20,7 @@ class UserRepository {
                         connection.release();
                         if(error) {
                             return response.status(400).json(error)
-                        }
+                        } 
                         response.status(200).json({message: 'Usuário criado com sucesso'})
                     }
                 )
