@@ -1,59 +1,83 @@
-import { pool } from '../../../mySql';
+import { pool } from '../../../database';
 import { v4 as uuidv4 } from 'uuid';
 import { Request, Response } from 'express';
 
 class VideoRepository {
-    create(request: Request, response: Response){
-        const { title, description, user_id, thumbnail } = request.body;
-        pool.getConnection((err:any, connection:any) =>{
-
-            connection.query(
-                'INSERT INTO videos (video_id, user_id, title, description, thumbnail) VALUES (?,?,?,?,?)',
-                [uuidv4(), user_id, title, description, thumbnail],
-                (error: any, result: any, fileds: any) =>{
-                    connection.release();
-                    if(error) {
-                        return response.status(400).json(error)
-                    }
-                    response.status(200).json({message: 'Vídeo criado com sucesso'})
-                }
-            )
-        })
+    create(request: Request, response: Response) {
+      const { title, description, user_id, thumbnail } = request.body;
+  
+      pool.connect((err, client, done) => {
+        if (err) {
+          return response.status(500).json(err);
+        }
+  
+        const query = `
+          INSERT INTO videos (video_id, user_id, title, description, thumbnail)
+          VALUES ($1, $2, $3, $4, $5)
+        `;
+        const values = [uuidv4(), user_id, title, description, thumbnail];
+  
+        client.query(query, values, (error, result) => {
+          done(); 
+  
+          if (error) {
+            return response.status(400).json({ error });
+          }
+  
+          response.status(200).json({ message: 'Vídeo criado com sucesso' });
+        });
+      });
     }
-
-    getVideos(request: Request, response: Response){
-        const { user_id } = request.query;
-        pool.getConnection((err:any, connection:any) =>{
-            connection.query(
-                'SELECT * FROM videos WHERE user_id = ?',
-                [user_id],
-                (error: any, results: any, fileds: any) =>{
-                    connection.release();
-                    if(error) { 
-                        return response.status(400).json({error: "Erro ao buscar os vídeos"})
-                    }
-                    return response.status(200).json({message: 'Vídeo retornado com sucesso', video: results});
-                }
-            )
-        })
+  
+    getVideos(request: Request, response: Response) {
+      const { user_id } = request.query;
+  
+      pool.connect((err, client, done) => {
+        if (err) {
+          return response.status(500).json(err);
+        }
+  
+        const query = `
+          SELECT * FROM videos WHERE user_id = $1
+        `;
+        const values = [user_id];
+  
+        client.query(query, values, (error, results) => {
+          done(); 
+  
+          if (error) {
+            return response.status(400).json({ error: 'Erro ao buscar os vídeos' });
+          }
+  
+          return response.status(200).json({ message: 'Vídeo retornado com sucesso', video: results.rows });
+        });
+      });
     }
-
-    searchVideos(request: Request, response: Response){
-        const { search } = request.query;
-        pool.getConnection((err:any, connection:any) =>{
-            connection.query(
-                'SELECT * FROM videos WHERE title LIKE ?',
-                [`%${search}%`],
-                (error: any, results: any, fileds: any) =>{
-                    connection.release();
-                    if(error) { 
-                        return response.status(400).json({error: "Erro ao buscar os vídeos"})
-                    }
-                    return response.status(200).json({message: 'Vídeo retornado com sucesso', video: results});
-                }
-            )
-        })
+  
+    searchVideos(request: Request, response: Response) {
+      const { search } = request.query;
+  
+      pool.connect((err, client, done) => {
+        if (err) {
+          return response.status(500).json(err);
+        }
+  
+        const query = `
+          SELECT * FROM videos WHERE title ILIKE $1
+        `;
+        const values = [`%${search}%`];
+  
+        client.query(query, values, (error, results) => {
+          done();
+  
+          if (error) {
+            return response.status(400).json({ error: 'Erro ao buscar os vídeos' });
+          }
+  
+          return response.status(200).json({ message: 'Vídeo retornado com sucesso', video: results.rows });
+        });
+      });
     }
-}
-
-export { VideoRepository };
+  }
+  
+  export { VideoRepository };

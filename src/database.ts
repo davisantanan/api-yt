@@ -1,8 +1,9 @@
 import mysql from 'mysql';
+import { Pool } from 'pg';
 import { config } from 'dotenv'
 config();
 
-const pool = mysql.createPool({
+const pool = new Pool({
     "user": process.env.USER_DATABASE,
     "password":process.env.PASSWORD_DATABASE,
     "database":process.env.DATABASE,
