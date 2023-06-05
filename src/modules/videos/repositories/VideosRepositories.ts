@@ -4,12 +4,12 @@ import { Request, Response } from 'express';
 
 class VideoRepository {
     create(request: Request, response: Response){
-        const { title, description, user_id } = request.body;
+        const { title, description, user_id, thumbnail } = request.body;
         pool.getConnection((err:any, connection:any) =>{
 
             connection.query(
-                'INSERT INTO videos (video_id, user_id, title, description) VALUES (?,?,?,?)',
-                [uuidv4(), user_id, title, description],
+                'INSERT INTO videos (video_id, user_id, title, description, thumbnail) VALUES (?,?,?,?,?)',
+                [uuidv4(), user_id, title, description, thumbnail],
                 (error: any, result: any, fileds: any) =>{
                     connection.release();
                     if(error) {
