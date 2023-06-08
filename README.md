@@ -20,7 +20,7 @@ Este projeto tem como objetivo estudo e incrementação do portfólio, trata-se 
 - Bcrypt
 - Cors
 - Jsonwebtoken
-- Mysql
+- PG
 - Uuid
 
 
@@ -37,7 +37,7 @@ Antes de começar, você vai precisar ter instalado em sua máquina as seguintes
 - npm install cors -D
 - npm intall dotenv -D 
 - npm install jsonwebtoken -D
-- npm install mysql -D 
+- npm install pg 
 - npm install uuid -D 
 - npm run dev
 
